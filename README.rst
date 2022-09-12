@@ -1,13 +1,26 @@
 koopmans-qe-utils
 =================
 
-Contains fortran utilities required for performing Koopmans calculations. These are:
+Fortran utilities required for performing Koopmans calculations with `koopmans-kcp <https://github.com/epfl-theos/koopmans-kcp>`_.
+
+Specifically, these utilities are:
 
 | ``merge_evc.x`` - a program for merging evc wavefunction files
 | ``wann2kcp.x`` - a program for converting wannier90 files into a format readable by kcp.x
 | ``epsilon.x`` - a modified version of Quantum ESPRESSO's epsilon.x
 
 These utilities are dependent a local Quantum ESPRESSO installation.
+
+Installation
+------------
+
+.. code-block:: bash
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+    make install
 
 Contact
 -------
