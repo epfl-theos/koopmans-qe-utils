@@ -99,13 +99,13 @@ function(qe_git_submodule_update PATH)
     # validate submodule_commit_hash_records against git database
     get_filename_component(SUBMODULE_NAME ${PATH} NAME)
     get_filename_component(SUBMODULE_UPPER_DIR ${PATH} DIRECTORY)
-    set(commit_hash_file ${qe_SOURCE_DIR}/${SUBMODULE_UPPER_DIR}/submodule_commit_hash_records)
+    set(commit_hash_file ${koopmans-qe-utils_SOURCE_DIR}/${SUBMODULE_UPPER_DIR}/submodule_commit_hash_records)
     # a submodule hash consistency check
     if(IS_GIT_PROJECT AND EXISTS ${commit_hash_file})
         # Extract submodule commit hash from git repo database
         execute_process(COMMAND ${GIT_EXECUTABLE} ls-tree HEAD ${PATH}
                         OUTPUT_VARIABLE DATABASE_STRING
-                        WORKING_DIRECTORY ${qe_SOURCE_DIR})
+                        WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR})
         string(REGEX REPLACE " |\t" ";" DATABASE_OUTPUT ${DATABASE_STRING})
         list(GET DATABASE_OUTPUT 2 DATABASE_HASH)
 
@@ -129,18 +129,18 @@ function(qe_git_submodule_update PATH)
         # in one go (via 'git submodule update --init'), we need
         # to call one command for each operation:
         execute_process(COMMAND ${GIT_EXECUTABLE} submodule init -- ${PATH}
-                        WORKING_DIRECTORY ${qe_SOURCE_DIR})
+                        WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR})
         execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --depth 1 -- ${PATH}
-                        WORKING_DIRECTORY ${qe_SOURCE_DIR})
+                        WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR})
     else()
         if(EXISTS ${commit_hash_file})
-            if(EXISTS ${qe_SOURCE_DIR}/${PATH}/.git)
-                message(STATUS "Previous clone found at ${qe_SOURCE_DIR}/${PATH}.")
+            if(EXISTS ${koopmans-qe-utils_SOURCE_DIR}/${PATH}/.git)
+                message(STATUS "Previous clone found at ${koopmans-qe-utils_SOURCE_DIR}/${PATH}.")
             else()
                 # get repo URL
                 execute_process(COMMAND ${GIT_EXECUTABLE} config --file .gitmodules --get submodule.${PATH}.URL
                                 OUTPUT_VARIABLE SUBMODULE_URL
-                                WORKING_DIRECTORY ${qe_SOURCE_DIR}
+                                WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR}
                                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 
                 # Extract submodule commit hash from saved records
@@ -149,18 +149,18 @@ function(qe_git_submodule_update PATH)
                 string(REPLACE " " ";" RECORD_OUTPUT ${RECORD_STRING})
                 list(GET RECORD_OUTPUT 0 RECORD_HASH)
 
-                message(STATUS "Cloning ${SUBMODULE_URL} into ${qe_SOURCE_DIR}/${PATH}.")
+                message(STATUS "Cloning ${SUBMODULE_URL} into ${koopmans-qe-utils_SOURCE_DIR}/${PATH}.")
 
                 execute_process(COMMAND ${GIT_EXECUTABLE} init ${PATH}
-                                WORKING_DIRECTORY ${qe_SOURCE_DIR})
+                                WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR})
                 execute_process(COMMAND ${GIT_EXECUTABLE} remote add origin ${SUBMODULE_URL}
-                                WORKING_DIRECTORY ${qe_SOURCE_DIR}/${PATH})
+                                WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR}/${PATH})
                 execute_process(COMMAND ${GIT_EXECUTABLE} fetch --depth 1 origin ${RECORD_HASH}
-                                WORKING_DIRECTORY ${qe_SOURCE_DIR}/${PATH}
+                                WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR}/${PATH}
                                 RESULT_VARIABLE GIT_FETCH_FAILED)
                 if(GIT_FETCH_FAILED)
-                    file(REMOVE_RECURSE ${qe_SOURCE_DIR}/${PATH}/.git)
-                    message(FATAL_ERROR "git fetch failed! Be sure to make ${qe_SOURCE_DIR}/${PATH} completely empty "
+                    file(REMOVE_RECURSE ${koopmans-qe-utils_SOURCE_DIR}/${PATH}/.git)
+                    message(FATAL_ERROR "git fetch failed! Be sure to make ${koopmans-qe-utils_SOURCE_DIR}/${PATH} completely empty "
                                         "(no hidden files) or removed before a re-try. "
                                         "If this was caused by the lack of Internet access, "
                                         "you can execute 'initialize_external_repos.sh' under QE 'TOPDIR/external' subdirectory "
@@ -168,7 +168,7 @@ function(qe_git_submodule_update PATH)
                 endif()
 
                 execute_process(COMMAND ${GIT_EXECUTABLE} checkout -b recorded_HEAD FETCH_HEAD
-                                WORKING_DIRECTORY ${qe_SOURCE_DIR}/${PATH})
+                                WORKING_DIRECTORY ${koopmans-qe-utils_SOURCE_DIR}/${PATH})
             endif()
         else()
           message(FATAL_ERROR "Failed to handle submodule '${SUBMODULE_NAME}'!")

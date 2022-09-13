@@ -17,7 +17,7 @@ project(koopmans-qe-utils
     DESCRIPTION "Utilities related to running Koopmans-compliant functionals with Quantum ESPRESSO"
     LANGUAGES Fortran C)
 
-if(${qe_BINARY_DIR} STREQUAL ${qe_SOURCE_DIR})
+if(${koopmans-qe-utils_BINARY_DIR} STREQUAL ${koopmans-qe-utils_SOURCE_DIR})
     message(FATAL_ERROR "QE source folder cannot be safely used as a build folder!")
 endif()
 
@@ -31,10 +31,10 @@ endif()
 ##########################################################
 # Define the paths for static libraries and executables
 ##########################################################
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${qe_BINARY_DIR}/lib 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${koopmans-qe-utils_BINARY_DIR}/lib 
     CACHE
     PATH "Single output directory for building all libraries.")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${qe_BINARY_DIR}/bin 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${koopmans-qe-utils_BINARY_DIR}/bin 
     CACHE
     PATH "Single output directory for building all executables.")
 
@@ -42,7 +42,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${qe_BINARY_DIR}/bin
 # Build helpers
 ###########################################################
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+# include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 include(cmake/qeHelpers.cmake)
 
 ###########################################################
@@ -371,7 +371,7 @@ endif(QE_ENABLE_MPI)
 # Git
 ###########################################################
 find_package(Git 2.13 REQUIRED)
-if(EXISTS ${qe_SOURCE_DIR}/.git)
+if(EXISTS ${koopmans-qe-utils_SOURCE_DIR}/.git)
   message(STATUS "Source files are cloned from a git repository.")
   set(IS_GIT_PROJECT 1)
   include(GitInfo)
@@ -569,10 +569,10 @@ add_subdirectory(src)
 # Pkg-config
 ###########################################################
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/quantum_espresso.pc.in
-    ${CMAKE_CURRENT_BINARY_DIR}/quantum_espresso.pc
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/koopmans-qe-utils.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/koopmans-qe-utils.pc
     @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/quantum_espresso.pc
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/koopmans-qe-utils.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 ###########################################################
