@@ -33,7 +33,7 @@ jobs:
               cd q-e
               mkdir build
               cd build
-              cmake ..
+              cmake .. -DENABLE_FOX
               make -j
          - name: Build koopmans-qe-utils
            run: |
