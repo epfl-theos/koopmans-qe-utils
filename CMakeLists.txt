@@ -43,7 +43,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${koopmans-qe-utils_BINARY_DIR}/bin
 ###########################################################
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 # include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-include(cmake/qeHelpers.cmake)
+include(cmake/koopmans-qe-utilsHelpers.cmake)
 
 ###########################################################
 # Build Type
@@ -243,10 +243,10 @@ else()
 endif()
 # QE_CPP_DEFAULT is only effective when cached QE_CPP doesn't exist.
 set(QE_CPP ${QE_CPP_DEFAULT} CACHE
-    STRING "C preprocessor for qe_preprocess_source in qeHelpers.cmake")
+    STRING "C preprocessor for qe_preprocess_source in koopmans-qe-utilsHelpers.cmake")
 find_program(QE_CPP_FULL_PATH NAMES ${QE_CPP} DOC "C preprocessor full path")
 if(QE_CPP_FULL_PATH)
-    message(STATUS "C preprocessor used by qe_preprocess_source in qeHelpers.cmake: ${QE_CPP_FULL_PATH}")
+    message(STATUS "C preprocessor used by qe_preprocess_source in koopmans-qe-utilsHelpers.cmake: ${QE_CPP_FULL_PATH}")
 else()
     set(QE_CPP_SAVED ${QE_CPP})
     unset(QE_CPP CACHE)
@@ -539,9 +539,19 @@ if(QE_ENABLE_HDF5)
 endif(QE_ENABLE_HDF5)
 
 ###########################################################
+# FoX
+###########################################################
+if(NOT FOX_ROOT)
+    set(FOX_ROOT "${QE_ROOT}/FoX/")
+endif()
+add_library(qe_fox INTERFACE)
+find_package(FoX REQUIRED)
+target_link_libraries(qe_fox INTERFACE FoX::FoX)
+###########################################################
+
+###########################################################
 # QE
 ###########################################################
-# The following targets will be defined:
 find_package(Espresso REQUIRED)
 ###########################################################
 
@@ -578,21 +588,21 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/koopmans-qe-utils.pc
 ###########################################################
 # Exports
 ###########################################################
-install(EXPORT qeTargets
-        FILE qeTargets.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/qe)
+install(EXPORT koopmans-qe-utilsTargets
+        FILE koopmans-qe-utilsTargets.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/koopmans-qe-utils)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    qeConfigVersion.cmake
+    koopmans-qe-utilsConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion)
 
-configure_file(cmake/qeConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/qeConfig.cmake @ONLY)
+configure_file(cmake/koopmans-qe-utilsConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/koopmans-qe-utilsConfig.cmake @ONLY)
 
 install(FILES
-            ${CMAKE_CURRENT_BINARY_DIR}/qeConfigVersion.cmake
-            ${CMAKE_CURRENT_BINARY_DIR}/qeConfig.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/koopmans-qe-utilsConfigVersion.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/koopmans-qe-utilsConfig.cmake
         DESTINATION
-            ${CMAKE_INSTALL_LIBDIR}/cmake/qe)
+            ${CMAKE_INSTALL_LIBDIR}/cmake/koopmans-qe-utils)

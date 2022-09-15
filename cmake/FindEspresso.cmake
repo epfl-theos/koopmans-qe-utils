@@ -24,40 +24,39 @@ This module will set the following variables in your project:
 
 #]=======================================================================]
 
-
-if(QE_ROOT)
-    message(STATUS "Loading Quantum ESPRESSO libraries from ${QE_ROOT}")
-else()
+if(NOT QE_ROOT)
     message(FATAL_ERROR "QE_ROOT not provided")
+elseif(NOT EXISTS ${QE_ROOT})
+    message(FATAL_ERROR "QE_ROOT=${QE_ROOT} does not exist")
+else()
+    message(STATUS "Looking for Quantum ESPRESSO libraries in ${QE_ROOT}")
 endif()
 
-find_library(libqe_modules NAMES qe_modules qemod
-    PATHS ${QE_ROOT}
-    PATH_SUFFIXES lib
-    REQUIRED)
-
-find_library(libqe_pp NAMES qe_pp pp
-    PATHS ${QE_ROOT}
-    PATH_SUFFIXES lib
-    REQUIRED)
-
-find_library(libqe_pw NAMES qe_pw pw
-    PATHS ${QE_ROOT}
-    PATH_SUFFIXES lib
-    REQUIRED)
-
+# Construct list of directories containing *.mod files
 set(QE_INCLUDE_DIRS "")
-foreach(mod IN ITEMS "kinds" "mp" "klist" "fft_types" "uspp")
-    file(GLOB_RECURSE mod_file
-        ${QE_ROOT}/**/${mod}.mod)
+file(GLOB_RECURSE mod_files
+    ${QE_ROOT}/**/*.mod)
+foreach(mod_file IN LISTS mod_files)
     get_filename_component(_include_dir ${mod_file} DIRECTORY)
     if(NOT _include_dir)
-        message(FATAL_ERROR "Failed to find the ${mod}.mod file")
+        message(FATAL_ERROR "Failed to find ${mod_file}")
     endif()
     list (APPEND QE_INCLUDE_DIRS ${_include_dir})
 endforeach()
-# 
-# add_library(Espresso::Espresso INTERFACE IMPORTED)
-# set_target_properties(Espresso::Espresso PROPERTIES
-#     INTERFACE_INCLUDE_DIRECTORIES "${libqe_include_dir}"
-#     INTERFACE_LINK_LIBRARIES "${libqe_modules};${libqe_pp};${libqe_pw}")
+list (REMOVE_DUPLICATES QE_INCLUDE_DIRS)
+
+message(STATUS "Found Quantum ESPRESSO modules: ${QE_INCLUDE_DIRS}")
+
+# Construct a list of Quantum ESPRESSO static libraries
+set(QE_LIBRARIES "")
+foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib qe_libbeef qe_lax qe_utilx qe_utilx_c qe_fftx qe_dftd3 qe_upflib qe_devxlib mbd)
+    set(libvar "lib${libname}")
+    find_library(${libvar} NAMES ${libname}
+        PATHS ${QE_ROOT}
+        PATH_SUFFIXES lib build/lib
+        NO_DEFAULT_PATH
+        REQUIRED)
+    list (APPEND QE_LIBRARIES ${${libvar}})
+endforeach()
+
+message(STATUS "Found Quantum ESPRESSO libraries: ${QE_LIBRARIES}")

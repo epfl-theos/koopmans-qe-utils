@@ -201,11 +201,11 @@ endfunction(_qe_add_target)
 function(qe_install_targets TGT)
     set(targets ${TGT} ${ARGN})
     install(TARGETS ${targets}
-        EXPORT qeTargets
+        EXPORT koopmans-qe-utilsTargets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} # Windows needs RUNTIME also for libraries
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qe/${TGT})
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/koopmans-qe-utils/${TGT})
     # Retrieving non-whitelisted properties leads to an hard
     # error, let's skip the following section for interface
     # targets. See here for details:
@@ -218,7 +218,7 @@ function(qe_install_targets TGT)
             get_target_property(tgt_module_dir ${tgt} Fortran_MODULE_DIRECTORY)
             if(tgt_module_dir)
                 install(DIRECTORY ${tgt_module_dir}/
-                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/qe/${TGT})
+                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/koopmans-qe-utils/${TGT})
             endif()
         endif()        
     endforeach()

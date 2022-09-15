@@ -10,7 +10,7 @@
 !
 !
 !------------------------------------------------------------------------
-MODULE wannier
+MODULE modified_wannier
   !
   !
   USE kinds,        ONLY : DP
@@ -53,4 +53,4 @@ MODULE wannier
   LOGICAL :: print_rho                            ! determines whether or not writing the supercell charge density to file
   !
   !
-END MODULE wannier
+END MODULE modified_wannier
