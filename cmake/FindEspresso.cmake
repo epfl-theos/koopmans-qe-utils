@@ -49,7 +49,7 @@ message(STATUS "Found Quantum ESPRESSO modules: ${QE_INCLUDE_DIRS}")
 
 # Construct a list of Quantum ESPRESSO static libraries
 set(QE_LIBRARIES "")
-foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib qe_libbeef qe_lax qe_utilx qe_utilx_c qe_fftx qe_dftd3 qe_upflib qe_devxlib mbd)
+foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib qe_libbeef qe_lax qe_upflib qe_utilx qe_utilx_c qe_fftx qe_dftd3 qe_devxlib mbd)
     set(libvar "lib${libname}")
     find_library(${libvar} NAMES ${libname}
         PATHS ${QE_ROOT}
