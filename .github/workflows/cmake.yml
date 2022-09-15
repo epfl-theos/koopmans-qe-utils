@@ -39,6 +39,7 @@ jobs:
            run: |
               mkdir build
               cd build
-              cmake .. -DQE_ROOT=../q-e/
+              ls $PWD/../q-e/lib/
+              cmake .. -DQE_ROOT=$PWD/../q-e/
               make
 
