@@ -34,7 +34,7 @@ jobs:
               mkdir build
               cd build
               cmake ..
-              pwd
+              make -j
          - name: Build koopmans-qe-utils
            run: |
               mkdir build
