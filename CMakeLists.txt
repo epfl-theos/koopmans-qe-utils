@@ -542,11 +542,14 @@ endif(QE_ENABLE_HDF5)
 # FoX
 ###########################################################
 if(NOT FOX_ROOT)
-    set(FOX_ROOT "${QE_ROOT}/FoX/")
+    set(FOX_ROOT "${QE_ROOT}/build/lib/")
 endif()
 add_library(qe_fox INTERFACE)
 find_package(FoX REQUIRED)
 target_link_libraries(qe_fox INTERFACE FoX::FoX)
+if(NOT FOX_FOUND)
+    message(FATAL_ERROR "Failed to find FoX")
+endif()
 ###########################################################
 
 ###########################################################

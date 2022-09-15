@@ -39,6 +39,6 @@ jobs:
            run: |
               mkdir build
               cd build
-              cmake .. -DQE_ROOT=$PWD/../q-e/build/
+              cmake .. -DQE_ROOT=$PWD/../q-e/
               make
 

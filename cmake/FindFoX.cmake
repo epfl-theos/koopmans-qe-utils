@@ -114,8 +114,7 @@ find_package_handle_standard_args(FOX
     FOX_WXML_LIB
     FOX_COMMON_LIB
     FOX_UTILS_LIB
-    FOX_FSYS_LIB
-    FOX_INCLUDE_DIRS)
+    FOX_FSYS_LIB)
 
 if(FOX_FOUND)
   add_library(FoX::FoX INTERFACE IMPORTED)
@@ -141,11 +140,4 @@ if(FOX_FOUND)
   target_link_libraries(FoX::Common INTERFACE ${FOX_COMMON_LIB})
   target_link_libraries(FoX::Utils INTERFACE ${FOX_UTILS_LIB})
   target_link_libraries(FoX::FSys INTERFACE ${FOX_FSYS_LIB})
-
-  target_include_directories(FoX::DOM INTERFACE ${FOX_INCLUDE_DIRS})
-  target_include_directories(FoX::SAX INTERFACE ${FOX_INCLUDE_DIRS})
-  target_include_directories(FoX::WXML INTERFACE ${FOX_INCLUDE_DIRS})
-  target_include_directories(FoX::Common INTERFACE ${FOX_INCLUDE_DIRS})
-  target_include_directories(FoX::Utils INTERFACE ${FOX_INCLUDE_DIRS})
-  target_include_directories(FoX::FSys INTERFACE ${FOX_INCLUDE_DIRS})
 endif()
