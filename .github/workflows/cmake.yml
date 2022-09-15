@@ -32,13 +32,13 @@ jobs:
               mkdir build
               cd build
               cmake ..
-              make -j
+              pwd
          - name: Checkout koopmans-qe-utils
            uses: actions/checkout@v2
          - name: Build koopmans-qe-utils
            run: |
               mkdir build
               cd build
-              cmake .. -DQE_ROOT=../q-e/
+              cmake .. -DQE_ROOT=$PWD/../q-e/
               make
 
