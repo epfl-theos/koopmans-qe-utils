@@ -116,10 +116,10 @@ set(QE_FFTW_VENDOR "AUTO" CACHE
 set(QE_ENABLE_SANITIZER "none" CACHE STRING "none,asan,ubsan,tsan,msan")
 set(QE_ENABLE_PLUGINS "" CACHE STRING "Semicolon-separated list of plugins")
 set(QE_LIBRARY_PATH "" CACHE STRING "Location of QE libraries")
-if(FOX_ROOT)
-    set(QE_FOX_INTERNAL OFF)
+if(FoX_ROOT)
+    set(QE_FoX_INTERNAL OFF)
 endif()
-option(QE_FOX_INTERNAL
+option(QE_FoX_INTERNAL
     "enable FoX intenal library" ON)
 if(WANNIER90_ROOT)
     set(QE_WANNIER90_INTERNAL OFF)
@@ -541,13 +541,13 @@ endif(QE_ENABLE_HDF5)
 ###########################################################
 # FoX
 ###########################################################
-if(NOT FOX_ROOT)
-    set(FOX_ROOT "${QE_ROOT}/build/lib/")
+if(NOT FoX_ROOT)
+    set(FoX_ROOT "${QE_ROOT}/build/lib/")
 endif()
 add_library(qe_fox INTERFACE)
 find_package(FoX REQUIRED)
 target_link_libraries(qe_fox INTERFACE FoX::FoX)
-if(NOT FOX_FOUND)
+if(NOT FoX_FOUND)
     message(FATAL_ERROR "Failed to find FoX")
 endif()
 ###########################################################
@@ -678,6 +678,8 @@ SET(BLA_VENDOR ${BLA_VENDOR_SAVED})
 ###########################################################
 # QE
 ###########################################################
+# Convert QE_ROOT to an absolute path
+get_filename_component(QE_ROOT "${QE_ROOT}" REALPATH BASE_DIR "${CMAKE_BINARY_DIR}")
 find_package(Espresso REQUIRED)
 ###########################################################
 

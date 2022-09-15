@@ -45,11 +45,15 @@ foreach(mod_file IN LISTS mod_files)
 endforeach()
 list (REMOVE_DUPLICATES QE_INCLUDE_DIRS)
 
-message(STATUS "Found Quantum ESPRESSO modules: ${QE_INCLUDE_DIRS}")
+if(QE_INCLUDE_DIRS)
+    message(STATUS "Found Quantum ESPRESSO modules: ${QE_INCLUDE_DIRS}")
+else()
+    message(FATAL_ERROR "Failed to find Quantum ESPRESSO modules")
+endif()
 
 # Construct a list of Quantum ESPRESSO static libraries
 set(QE_LIBRARIES "")
-foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib qe_libbeef qe_lax qe_upflib qe_utilx qe_utilx_c qe_fftx qe_dftd3 qe_devxlib mbd)
+foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib qe_libbeef qe_lax qe_upflib qe_xml qe_utilx qe_utilx_c qe_fftx qe_dftd3 qe_devxlib mbd)
     set(libvar "lib${libname}")
     find_library(${libvar} NAMES ${libname}
         PATHS ${QE_ROOT}

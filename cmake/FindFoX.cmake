@@ -11,7 +11,7 @@ Input Variables
 
 The following variables may be set to influence this module's behavior:
 
-``FOX_ROOT``
+``FoX_ROOT``
   The path to the installation folder of FoX library
 
 Imported targets
@@ -32,91 +32,91 @@ Result Variables
 
 This module will set the following variables in your project:
 
-``FOX_FOUND``
+``FoX_FOUND``
   FoX is found
-``FOX_LIBRARIES``
+``FoX_LIBRARIES``
   the libraries needed to use FoX.
-``FOX_INCLUDE_DIRS``
+``FoX_INCLUDE_DIRS``
   where to find modules and headers for FoX
-``FOX_DOM_LIB``
+``FoX_DOM_LIB``
   DOM interface of FoX
-``FOX_SAX_LIB``
+``FoX_SAX_LIB``
   SAX interface of FoX
-``FOX_WXML_LIB``
+``FoX_WXML_LIB``
   VoiceXML interface of FoX
-``FOX_COMMON_LIB``
+``FoX_COMMON_LIB``
   Interface for common functions of FoX
-``FOX_UTILS_LIB``
+``FoX_UTILS_LIB``
   Interface for util functions of FoX
-``FOX_FSYS_LIB``
+``FoX_FSYS_LIB``
   Interface for file system functions of FoX
 
 #]=======================================================================]
-message(STATUS "Looking for FoX in ${FOX_ROOT}")
+message(STATUS "Looking for FoX in ${FoX_ROOT}")
 
 find_library(
-    FOX_DOM_LIB
+    FoX_DOM_LIB
     NAMES "FoX_dom"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES "lib")
 
 find_library(
-    FOX_SAX_LIB
+    FoX_SAX_LIB
     NAMES "FoX_sax"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES "lib")
 
 find_library(
-    FOX_WXML_LIB
+    FoX_WXML_LIB
     NAMES "FoX_wxml"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES "lib")
 
 find_library(
-    FOX_COMMON_LIB
+    FoX_COMMON_LIB
     NAMES "FoX_common"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES "lib")
 
 find_library(
-    FOX_UTILS_LIB
+    FoX_UTILS_LIB
     NAMES "FoX_utils"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES "lib")
 
 find_library(
-    FOX_FSYS_LIB
+    FoX_FSYS_LIB
     NAMES "FoX_fsys"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES "lib")
 
-set(FOX_LIBRARIES 
-    ${FOX_DOM_LIB}
-    ${FOX_SAX_LIB}
-    ${FOX_WXML_LIB}
-    ${FOX_COMMON_LIB}
-    ${FOX_UTILS_LIB}
-    ${FOX_FSYS_LIB})
+set(FoX_LIBRARIES 
+    ${FoX_DOM_LIB}
+    ${FoX_SAX_LIB}
+    ${FoX_WXML_LIB}
+    ${FoX_COMMON_LIB}
+    ${FoX_UTILS_LIB}
+    ${FoX_FSYS_LIB})
 
 find_path(
-    FOX_INCLUDE_DIRS
+    FoX_INCLUDE_DIRS
     NAMES "m_common_io.mod"
-    HINTS ${FOX_ROOT}
+    HINTS ${FoX_ROOT}
     PATH_SUFFIXES
         "include"
         "finclude")
 
-find_package_handle_standard_args(FOX
+find_package_handle_standard_args(FoX
   REQUIRED_VARS
-    FOX_LIBRARIES
-    FOX_DOM_LIB
-    FOX_SAX_LIB
-    FOX_WXML_LIB
-    FOX_COMMON_LIB
-    FOX_UTILS_LIB
-    FOX_FSYS_LIB)
+    FoX_LIBRARIES
+    FoX_DOM_LIB
+    FoX_SAX_LIB
+    FoX_WXML_LIB
+    FoX_COMMON_LIB
+    FoX_UTILS_LIB
+    FoX_FSYS_LIB)
 
-if(FOX_FOUND)
+if(FoX_FOUND)
   add_library(FoX::FoX INTERFACE IMPORTED)
   add_library(FoX::DOM INTERFACE IMPORTED)
   add_library(FoX::SAX INTERFACE IMPORTED)
@@ -134,10 +134,10 @@ if(FOX_FOUND)
       FoX::Utils
       FoX::FSys)
 
-  target_link_libraries(FoX::DOM INTERFACE ${FOX_DOM_LIB})
-  target_link_libraries(FoX::SAX INTERFACE ${FOX_SAX_LIB})
-  target_link_libraries(FoX::WXML INTERFACE ${FOX_WXML_LIB})
-  target_link_libraries(FoX::Common INTERFACE ${FOX_COMMON_LIB})
-  target_link_libraries(FoX::Utils INTERFACE ${FOX_UTILS_LIB})
-  target_link_libraries(FoX::FSys INTERFACE ${FOX_FSYS_LIB})
+  target_link_libraries(FoX::DOM INTERFACE ${FoX_DOM_LIB})
+  target_link_libraries(FoX::SAX INTERFACE ${FoX_SAX_LIB})
+  target_link_libraries(FoX::WXML INTERFACE ${FoX_WXML_LIB})
+  target_link_libraries(FoX::Common INTERFACE ${FoX_COMMON_LIB})
+  target_link_libraries(FoX::Utils INTERFACE ${FoX_UTILS_LIB})
+  target_link_libraries(FoX::FSys INTERFACE ${FoX_FSYS_LIB})
 endif()
