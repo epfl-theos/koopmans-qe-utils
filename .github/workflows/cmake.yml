@@ -20,6 +20,8 @@ jobs:
            run: |
               sudo apt-get update
               sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev fftw3-dev
+         - name: Checkout koopmans-qe-utils
+           uses: actions/checkout@v2
          - name: Checkout q-e
            uses: actions/checkout@v2
            with:
@@ -33,12 +35,10 @@ jobs:
               cd build
               cmake ..
               pwd
-         - name: Checkout koopmans-qe-utils
-           uses: actions/checkout@v2
          - name: Build koopmans-qe-utils
            run: |
               mkdir build
               cd build
-              cmake .. -DQE_ROOT=$PWD/../q-e/
+              cmake .. -DQE_ROOT=../q-e/
               make
 
