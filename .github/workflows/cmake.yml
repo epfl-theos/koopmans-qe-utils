@@ -22,7 +22,8 @@ jobs:
               sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev fftw3-dev
          - name: Checkout q-e
            uses: actions/checkout@v2
-              url: https://gitlab.com/QEF/q-e.git
+           with:
+              repository: https://gitlab.com/QEF/q-e.git
               path: q-e
               submodues: recursive
          - name: Build q-e
