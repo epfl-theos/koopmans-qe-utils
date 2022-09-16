@@ -1,10 +1,14 @@
-# Makefile for PostProc
+# Makefile for koopmans-qe-utils
+
+QE_ROOT ?= ../../q-e
+
+QE_ROOT_ABS = $(realpath $(QE_ROOT))
 
 default : all
 
 all : bindir
 	if test -d src ; then \
-	( cd src ; $(MAKE) || exit 1 ) ; fi
+	( cd src ; $(MAKE) QE_ROOT=$(QE_ROOT_ABS) || exit 1 ) ; fi
 
 bindir :
 	test -d bin || mkdir bin
