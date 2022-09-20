@@ -5,9 +5,9 @@ Fortran utilities required for performing Koopmans calculations with `koopmans-k
 
 Specifically, these utilities are:
 
-| ``merge_evc.x`` - a program for merging evc wavefunction files
-| ``wann2kcp.x`` - a program for converting wannier90 files into a format readable by kcp.x
-| ``epsilon.x`` - a modified version of ``Quantum ESPRESSO``'s epsilon.x
+| ``merge_evc.x`` - a program for merging wavefunction files
+| ``wann2kcp.x`` - a program for converting ``Wannier90`` files into a format readable by ``kcp.x``
+| ``epsilon.x`` - a modified version of ``Quantum ESPRESSO``'s ``epsilon.x``
 
 Installation
 ------------
