@@ -1,7 +1,7 @@
 koopmans-qe-utils
 =================
 
-Fortran utilities required for performing Koopmans calculations with `koopmans-kcp <https://github.com/epfl-theos/koopmans-kcp>`_.
+Fortran utilities required for performing Koopmans calculations with `koopmans-kcp <https://github.com/epfl-theos/koopmans-kcp>`_, built on top of `Quantum ESPRESSO <https://www.quantum-espresso.org/>`_.
 
 Specifically, these utilities are:
 
@@ -9,12 +9,12 @@ Specifically, these utilities are:
 | ``wann2kcp.x`` - a program for converting wannier90 files into a format readable by kcp.x
 | ``epsilon.x`` - a modified version of ``Quantum ESPRESSO``'s epsilon.x
 
-These utilities are dependent a local ``Quantum ESPRESSO`` installation.
-
 Installation
 ------------
 
-First, ensure you have a local installation of ``Quantum ESPRESSO`` on your machine. ``koopmans-qe-utils`` can then be installed with ``cmake``:
+First, ensure you have a local installation of ``Quantum ESPRESSO`` on your machine. See https://gitlab.com/QEF/q-e for how to do this.
+
+Having installed ``Quantum ESPRESSO``, ``koopmans-qe-utils`` can then be installed with ``cmake``:
 
 .. code-block:: bash
 
