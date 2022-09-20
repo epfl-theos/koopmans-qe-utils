@@ -2,7 +2,7 @@
 
 QE_ROOT ?= ../../q-e
 QE_ROOT_ABS = $(realpath $(QE_ROOT))
-PREFIX ?= /usr/local/
+PREFIX ?= /usr/local
 
 .PHONY: install
 
