@@ -34,6 +34,8 @@ or with ``make``:
 
 Both ``cmake`` and ``./configure`` take the same arguments as they do for ``Quantum ESPRESSO``.
 
+*Use the same method (``cmake`` or ``make``) that you used to compile ``Quantum ESPRESSO``.*
+
 Contact
 -------
 Written and maintained by Edward Linscott, Riccardo De Gennaro, and Nicola Colonna (2020-)
