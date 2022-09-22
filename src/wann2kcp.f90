@@ -26,7 +26,7 @@ PROGRAM wann2kcp
   USE environment,      ONLY : environment_start, environment_end
   USE wannier2kcp,      ONLY : wan2odd
   USE plot_wan2odd,     ONLY : plot_wann
-  USE wannier
+  USE modified_wannier
   !
   IMPLICIT NONE
   !
@@ -186,7 +186,7 @@ SUBROUTINE find_mp_grid( )
   USE constants,     ONLY : eps8
   USE io_global,     ONLY : stdout
   USE kinds,         ONLY : DP
-  USE wannier
+  USE modified_wannier
 
   IMPLICIT NONE
 
@@ -255,7 +255,7 @@ SUBROUTINE read_nnkp( )
   USE mp_world,         ONLY : world_comm
   USE wvfct,            ONLY : npwx, nbnd
   USE noncollin_module, ONLY : noncolin
-  USE wannier
+  USE modified_wannier
   !
   IMPLICIT NONE
   !
@@ -610,8 +610,8 @@ END SUBROUTINE read_nnkp
 SUBROUTINE scan_file_to( keyword, found )
    !-----------------------------------------------------------------------
    !
-   USE wannier, ONLY :iun_nnkp
-   USE io_global,  ONLY : stdout
+   USE modified_wannier, ONLY :iun_nnkp
+   USE io_global,        ONLY : stdout
    IMPLICIT NONE
    CHARACTER(len=*), intent(in) :: keyword
    logical, intent(out) :: found
@@ -640,8 +640,8 @@ SUBROUTINE get_wannier_to_plot( )
   !
   ! ... gets the list of Wannier functions to plot
   !
-  USE kinds,           ONLY : DP
-  USE wannier,         ONLY : n_wannier, iknum, wannier_plot_list, wann_to_plot
+  USE kinds,            ONLY : DP
+  USE modified_wannier, ONLY : n_wannier, iknum, wannier_plot_list, wann_to_plot
   !
   IMPLICIT NONE
   !
@@ -766,7 +766,7 @@ SUBROUTINE mp_grid_ks2kcp( )
    ! ...  It is necessary to momentarily change the definition of
    ! ...  iknum in order to properly define mp_grid.
    !
-   USE wannier,           ONLY : kpt_latt, iknum
+   USE modified_wannier,  ONLY : kpt_latt, iknum
    USE lsda_mod,          ONLY : nspin
    USE cell_base,         ONLY : at
    USE klist,             ONLY : xk

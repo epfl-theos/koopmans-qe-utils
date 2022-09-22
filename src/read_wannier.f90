@@ -51,7 +51,7 @@ MODULE read_wannier
     USE klist,               ONLY : nkstot
     USE wvfct,               ONLY : nbnd
     USE lsda_mod,            ONLY : nspin
-    USE wannier,             ONLY : seedname
+    USE modified_wannier,    ONLY : seedname
     !
     !
     IMPLICIT NONE

@@ -1,0 +1,13 @@
+prefix="@CMAKE_INSTALL_PREFIX@"
+exec_prefix="${prefix}"
+libdir="${prefix}/@CMAKE_INSTALL_LIBDIR@"
+includedir="${prefix}/include/koopmans-qe-utils"
+
+Name: koopmans-qe-utils
+Description: Utilities related to running Koopmans-compliant functionals with Quantum ESPRESSO
+URL: https://github.com/epfl-theos/koopmans-kcp
+Version: @CMAKE_PROJECT_VERSION@
+
+Requires: @PKGCONF_REQ_PUB@
+Cflags:
+Libs:

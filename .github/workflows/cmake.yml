@@ -1,0 +1,44 @@
+name: CMake
+
+on:
+   pull_request:
+      branches:
+         - master
+   push:
+      branches:
+         - master
+
+jobs:
+   gfortran:
+      runs-on: ubuntu-latest
+      steps:
+         - name: Set up git user
+           run: |
+              git config --global user.name "koopmans-qe-utils-tester"
+              git config --global user.email ${{ secrets.TESTER_EMAIL }}
+         - name: Install dependencies
+           run: |
+              sudo apt-get update
+              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev fftw3-dev
+         - name: Checkout koopmans-qe-utils
+           uses: actions/checkout@v2
+         - name: Checkout q-e
+           uses: actions/checkout@v2
+           with:
+              repository: QEF/q-e
+              path: q-e
+              submodules: recursive
+         - name: Build q-e
+           run: |
+              cd q-e
+              mkdir build
+              cd build
+              cmake .. -DQE_ENABLE_FOX=ON
+              make -j
+         - name: Build koopmans-qe-utils
+           run: |
+              mkdir build
+              cd build
+              cmake .. -DQE_ROOT=$PWD/../q-e/
+              make
+

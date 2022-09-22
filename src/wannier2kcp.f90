@@ -83,7 +83,7 @@ MODULE wannier2kcp
                                     gamma_only_x, npwxcp, ngmcp, mill_cp, ig_l2g_cp, &
                                     iunwann, nwordwann, check_fft
     USE cp_files,            ONLY : write_wannier_cp
-    USE wannier,             ONLY : seedname, ikstart, wannier_plot, gamma_trick, &
+    USE modified_wannier,    ONLY : seedname, ikstart, wannier_plot, gamma_trick, &
                                     wan_mode, iknum, mp_grid, print_rho
     USE read_wannier
     !
