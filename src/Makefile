@@ -21,7 +21,7 @@ WAN2KCP_OBJS = modified_wannier.o read_wannier.o fft_supercell.o scell_wfc.o plo
 
 MODULES = $(PWOBJS) $(QEMODS)
 
-all: checkmake pwlib pplib epsilon.x wann2kcp.x merge_evc.x
+all: checkmake pwlib pplib epsilon_koopmans.x wann2kcp.x merge_evc.x
 
 checkmake:
 	- test -f $(QE_ROOT)/make.inc || (echo 'Could not find $(QE_ROOT)/make.inc. Please configure your Quantum ESPRESSO installation first.'; exit 1)
@@ -41,7 +41,7 @@ wann2kcp.x: wann2kcp.o $(WAN2KCP_OBJS) $(MODULES) $(LIBOBJS)
 		wann2kcp.o $(WAN2KCP_OBJS) $(MODULES) $(LIBOBJS) $(QELIBS)
 	- ( cd ../bin ; ln -fs ../src/$@ . )
 
-epsilon.x: epsilon.o $(MODULES) $(LIBOBJS)
+epsilon_koopmans.x: epsilon.o $(MODULES) $(LIBOBJS)
 	$(LD) $(LDFLAGS) -o $@ epsilon.o $(MODULES) \
 	$(LIBOBJS) $(QELIBS)
 	- ( cd ../bin ; ln -fs ../src/$@ . )
