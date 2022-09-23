@@ -27,14 +27,14 @@ target_link_libraries(qe_merge_evc_exe)
 set(src_wann2kcp_x wann2kcp.f90)
 qe_add_executable(qe_wann2kcp_exe ${src_wann2kcp_x})
 set_target_properties(qe_wann2kcp_exe PROPERTIES OUTPUT_NAME wann2kcp.x)
-target_link_libraries(qe_wann2kcp_exe PRIVATE qe_koopmans_utils ${QE_LIBRARIES} qe_fox qe_lapack qe_mpi_fortran qe_openmp_fortran qe_hdf5_fortran qe_ext_fft)
+target_link_libraries(qe_wann2kcp_exe PRIVATE qe_koopmans_utils ${QE_LIBRARIES} qe_fox qe_scalapack qe_lapack qe_mpi_fortran qe_openmp_fortran qe_hdf5_fortran qe_ext_fft)
 
 ###########################################################
 # epsilon.x
 ###########################################################
 set(src_epsilon_x epsilon.f90)
 qe_add_executable(qe_epsilon_exe ${src_epsilon_x})
-set_target_properties(qe_epsilon_exe PROPERTIES OUTPUT_NAME epsilon.x)
-target_link_libraries(qe_epsilon_exe PRIVATE qe_koopmans_utils ${QE_LIBRARIES} qe_fox qe_lapack qe_mpi_fortran qe_openmp_fortran qe_hdf5_fortran qe_ext_fft)
+set_target_properties(qe_epsilon_exe PROPERTIES OUTPUT_NAME epsilon_koopmans.x)
+target_link_libraries(qe_epsilon_exe PRIVATE qe_koopmans_utils ${QE_LIBRARIES} qe_fox qe_scalapack qe_lapack qe_mpi_fortran qe_openmp_fortran qe_hdf5_fortran qe_ext_fft)
 
 qe_install_targets(qe_merge_evc_exe qe_wann2kcp_exe qe_epsilon_exe)
