@@ -21,7 +21,7 @@ jobs:
               uname -ra
               lsb_release -a
               sudo apt-get update
-              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev libfftw3 fftw3-dev
+              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev libfftw3-dev
          - name: Checkout koopmans-qe-utils
            uses: actions/checkout@v2
          - name: Checkout q-e
