@@ -35,7 +35,7 @@ jobs:
               cd q-e
               mkdir build
               cd build
-              cmake .. -DQE_ENABLE_FOX=ON
+              cmake .. -DQE_ENABLE_FOX=OFF
               make -j
          - name: Build koopmans-qe-utils
            run: |
