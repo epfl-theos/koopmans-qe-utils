@@ -18,8 +18,10 @@ jobs:
               git config --global user.email ${{ secrets.TESTER_EMAIL }}
          - name: Install dependencies
            run: |
+              uname -ra
+              lsb_release -a
               sudo apt-get update
-              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev fftw3 fftw3-dev
+              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev libfftw3 fftw3-dev
          - name: Checkout koopmans-qe-utils
            uses: actions/checkout@v2
          - name: Checkout q-e
