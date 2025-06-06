@@ -116,11 +116,6 @@ set(QE_FFTW_VENDOR "AUTO" CACHE
 set(QE_ENABLE_SANITIZER "none" CACHE STRING "none,asan,ubsan,tsan,msan")
 set(QE_ENABLE_PLUGINS "" CACHE STRING "Semicolon-separated list of plugins")
 set(QE_LIBRARY_PATH "" CACHE STRING "Location of QE libraries")
-if(FoX_ROOT)
-    set(QE_FoX_INTERNAL OFF)
-endif()
-option(QE_FoX_INTERNAL
-    "enable FoX intenal library" ON)
 if(WANNIER90_ROOT)
     set(QE_WANNIER90_INTERNAL OFF)
 endif()
@@ -537,20 +532,6 @@ if(QE_ENABLE_HDF5)
         INTERFACE
             ${HDF5_C_DEFINITIONS})
 endif(QE_ENABLE_HDF5)
-
-###########################################################
-# FoX
-###########################################################
-if(NOT FoX_ROOT)
-    set(FoX_ROOT "${QE_ROOT}/build/lib/")
-endif()
-add_library(qe_fox INTERFACE)
-find_package(FoX REQUIRED)
-target_link_libraries(qe_fox INTERFACE FoX::FoX)
-if(NOT FoX_FOUND)
-    message(FATAL_ERROR "Failed to find FoX")
-endif()
-###########################################################
 
 ###########################################################
 # External FFT library

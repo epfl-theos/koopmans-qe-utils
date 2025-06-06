@@ -18,8 +18,9 @@ jobs:
               git config --global user.email ${{ secrets.TESTER_EMAIL }}
          - name: Install dependencies
            run: |
+              lsb_release -a
               sudo apt-get update
-              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev fftw3-dev
+              sudo apt-get install gfortran libopenmpi-dev libblas-dev liblapack-dev libfftw3-dev
          - name: Checkout koopmans-qe-utils
            uses: actions/checkout@v2
          - name: Checkout q-e
@@ -33,7 +34,7 @@ jobs:
               cd q-e
               mkdir build
               cd build
-              cmake .. -DQE_ENABLE_FOX=ON
+              cmake .. -DQE_ENABLE_FOX=OFF
               make -j
          - name: Build koopmans-qe-utils
            run: |
