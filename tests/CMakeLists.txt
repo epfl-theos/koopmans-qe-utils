@@ -62,6 +62,21 @@ find_program(WANNIER90_EXECUTABLE wannier90.x
     PATH_SUFFIXES bin build/bin)
 
 # ---------------------------------------------------------
+# HDF5 availability.
+# ---------------------------------------------------------
+# The wann2kcp_basic fixture ships QE wavefunctions as .hdf5 files, so the
+# test requires the linked QE to have been built with HDF5 support. In
+# in-tree mode we reuse the parent QE_ENABLE_HDF5 option. In standalone
+# mode we have no QE tree to inspect, so we default to ON and let
+# packagers override with -DKQU_TESTS_ENABLE_HDF5=OFF.
+if(KQU_TESTS_STANDALONE)
+    option(KQU_TESTS_ENABLE_HDF5
+        "Assume the installed wann2kcp.x was built with QE HDF5 support" ON)
+else()
+    set(KQU_TESTS_ENABLE_HDF5 ${QE_ENABLE_HDF5})
+endif()
+
+# ---------------------------------------------------------
 # MPI launch configuration.
 # ---------------------------------------------------------
 if(KQU_TESTS_STANDALONE)
@@ -104,6 +119,7 @@ set_tests_properties(merge_evc_basic PROPERTIES
 # ---------------------------------------------------------
 if(WANN2KCP_EXECUTABLE
    AND WANNIER90_EXECUTABLE
+   AND KQU_TESTS_ENABLE_HDF5
    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/wann2kcp_basic/ref.dat
    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/wann2kcp_basic/fixtures)
     add_test(
@@ -123,7 +139,8 @@ if(WANN2KCP_EXECUTABLE
 else()
     message(STATUS
         "Skipping wann2kcp_basic test: "
-        "wann2kcp.x or wannier90.x not found, or fixtures/ref.dat missing")
+        "wann2kcp.x or wannier90.x not found, HDF5 support disabled, "
+        "or fixtures/ref.dat missing")
 endif()
 
 # ---------------------------------------------------------
