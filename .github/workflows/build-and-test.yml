@@ -1,0 +1,95 @@
+name: Build and test
+
+on:
+   pull_request:
+      branches:
+         - master
+   push:
+      branches:
+         - master
+
+jobs:
+   build-and-test:
+      name: Build + test (gfortran + OpenMPI, HDF5)
+      runs-on: ubuntu-latest
+      steps:
+         - name: Install system dependencies
+           run: |
+              sudo apt-get update
+              sudo apt-get install -y \
+                 gfortran \
+                 libopenmpi-dev \
+                 libblas-dev \
+                 liblapack-dev \
+                 libfftw3-dev \
+                 libhdf5-openmpi-dev \
+                 cmake \
+                 python3
+         - name: Checkout koopmans-qe-utils
+           uses: actions/checkout@v4
+         - name: Checkout Quantum ESPRESSO (qe-7.4)
+           uses: actions/checkout@v4
+           with:
+              repository: QEF/q-e
+              ref: qe-7.4
+              path: q-e
+         - name: Cache QE build tree
+           id: cache-qe
+           uses: actions/cache@v4
+           with:
+              # Cache only the build tree; the source tree is re-fetched
+              # via checkout on every run (cheap) but the compile is slow.
+              # Bump the trailing version suffix (-v1) whenever the QE
+              # build recipe below changes, to force a rebuild.
+              path: q-e/build
+              key: qe-build-${{ runner.os }}-qe-7.4-v1
+         - name: Fetch required QE submodules
+           # Only fetch the submodules our --target list actually consumes,
+           # skipping FoX (off), Environ, D3Q, pw2qmcpack, qe-gipaw. Shallow
+           # clones are fine since QE builds from their worktree contents,
+           # not their git history. Skipped on cache hit — the compile is
+           # already finished and the built artefacts don't need sources.
+           if: steps.cache-qe.outputs.cache-hit != 'true'
+           working-directory: q-e
+           run: |
+              git submodule update --init --depth=1 \
+                 external/devxlib \
+                 external/mbd \
+                 external/wannier90
+         - name: Build QE libraries and wannier90.x
+           if: steps.cache-qe.outputs.cache-hit != 'true'
+           # FindEspresso.cmake looks up QE's static archives; shared libs
+           # are scattered across build/<subdir>/ and can't be found.
+           # Only the libraries we link against and the wannier90.x
+           # executable (needed at test time by wann2kcp_basic) are built.
+           run: |
+              cmake -S q-e -B q-e/build \
+                 -DBUILD_SHARED_LIBS=OFF \
+                 -DQE_ENABLE_MPI=ON \
+                 -DQE_ENABLE_HDF5=ON \
+                 -DHDF5_PREFER_PARALLEL=ON \
+                 -DQE_ENABLE_FOX=OFF \
+                 -DQE_WANNIER90_INTERNAL=ON \
+                 -DCMAKE_BUILD_TYPE=Release
+              cmake --build q-e/build -j --target \
+                 qe_pw qe_pp qe_modules qe_modules_c \
+                 qe_fftx qe_fftx_c qe_utilx qe_utilx_c qe_upflib \
+                 qe_lax qe_xclib qe_libbeef qe_xml qe_devxlib qe_dftd3 \
+                 qe_device_lapack qe_kssolver_dense mbd qe_wannier90_exe
+         - name: Configure and build koopmans-qe-utils (with tests)
+           # WANNIER90_EXECUTABLE has to be passed in at configure time so
+           # tests/CMakeLists.txt's find_program() locates the freshly-built
+           # wannier90.x and registers the wann2kcp_basic ctest case. Without
+           # it the test is silently unregistered.
+           run: |
+              cmake -S . -B build \
+                 -DQE_ROOT=$GITHUB_WORKSPACE/q-e \
+                 -DQE_ENABLE_MPI=ON \
+                 -DQE_ENABLE_HDF5=ON \
+                 -DQE_ENABLE_TEST=ON \
+                 -DWANNIER90_EXECUTABLE=$GITHUB_WORKSPACE/q-e/build/bin/wannier90.x \
+                 -DCMAKE_BUILD_TYPE=Release
+              cmake --build build -j
+         - name: Run ctest
+           run: |
+              ctest --test-dir build --output-on-failure

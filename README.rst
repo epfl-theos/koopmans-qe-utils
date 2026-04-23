@@ -28,11 +28,10 @@ or with ``make``:
 
 .. code-block:: bash
 
-    ./configure
     make QE_ROOT=/path/to/q-e/
     make install
 
-Both ``cmake`` and ``./configure`` take the same arguments as they do for ``Quantum ESPRESSO``.
+``cmake`` takes the same arguments as it does for ``Quantum ESPRESSO``.
 
 *N.B.* Use the same method (``cmake`` or ``make``) that you used to compile ``Quantum ESPRESSO``.
 

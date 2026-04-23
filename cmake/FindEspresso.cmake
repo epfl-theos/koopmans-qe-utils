@@ -51,9 +51,24 @@ else()
     message(FATAL_ERROR "Failed to find Quantum ESPRESSO modules")
 endif()
 
-# Construct a list of Quantum ESPRESSO static libraries
+# Construct a list of Quantum ESPRESSO static libraries.
+# This is the full set required to link koopmans-qe-utils against a
+# static QE build:
+#   - qe_pw, qe_pp, qe_modules, qe_fftx, qe_utilx, qe_upflib: provide
+#     Fortran modules USEd directly by our sources.
+#   - qe_lax, qe_xclib, qe_devxlib, qe_dftd3, qe_device_lapack,
+#     qe_kssolver_dense, mbd, qe_xml, qe_libbeef: PRIVATE link-time
+#     dependencies of qe_pw / qe_pp / qe_xclib that must be on the
+#     link line because QE ships static archives with unresolved
+#     transitive references.
+#   - qe_modules_c, qe_utilx_c, qe_fftx_c: C-side companions holding
+#     BIND(C) implementations the Fortran libraries call.
 set(QE_LIBRARIES "")
-foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib qe_libbeef qe_lax qe_device_lapack qe_upflib qe_xml qe_utilx qe_utilx_c qe_fftx qe_fftx_c qe_dftd3 qe_devxlib mbd)
+foreach(libname
+        qe_pw qe_pp qe_modules qe_modules_c
+        qe_fftx qe_fftx_c qe_utilx qe_utilx_c qe_upflib
+        qe_lax qe_xclib qe_libbeef qe_xml qe_devxlib qe_dftd3
+        qe_device_lapack qe_kssolver_dense mbd)
     set(libvar "lib${libname}")
     find_library(${libvar} NAMES ${libname}
         PATHS ${QE_ROOT}
@@ -64,3 +79,13 @@ foreach(libname qe_pw qe_pp qe_kssolver_dense qe_modules qe_modules_c qe_xclib q
 endforeach()
 
 message(STATUS "Found Quantum ESPRESSO libraries: ${QE_LIBRARIES}")
+
+# QE's static archives have circular references (e.g. qe_kssolver_dense
+# → qe_lax), so single-pass linkers (GNU ld / LLD on Linux and *BSD)
+# can't resolve symbols without being told to rescan. Wrap the list in
+# --start-group / --end-group on those platforms. macOS ld64 and
+# Windows link.exe iterate by default and reject these options.
+if(NOT APPLE AND NOT WIN32)
+    set(QE_LIBRARIES
+        "-Wl,--start-group" ${QE_LIBRARIES} "-Wl,--end-group")
+endif()
