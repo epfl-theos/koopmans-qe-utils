@@ -65,17 +65,19 @@ jobs:
                  qe_lax qe_xclib qe_libbeef qe_xml qe_devxlib qe_dftd3 \
                  qe_device_lapack qe_kssolver_dense mbd qe_wannier90_exe
          - name: Configure and build koopmans-qe-utils (with tests)
+           # WANNIER90_EXECUTABLE has to be passed in at configure time so
+           # tests/CMakeLists.txt's find_program() locates the freshly-built
+           # wannier90.x and registers the wann2kcp_basic ctest case. Without
+           # it the test is silently unregistered.
            run: |
               cmake -S . -B build \
                  -DQE_ROOT=$GITHUB_WORKSPACE/q-e \
                  -DQE_ENABLE_MPI=ON \
                  -DQE_ENABLE_HDF5=ON \
                  -DQE_ENABLE_TEST=ON \
+                 -DWANNIER90_EXECUTABLE=$GITHUB_WORKSPACE/q-e/build/bin/wannier90.x \
                  -DCMAKE_BUILD_TYPE=Release
               cmake --build build -j
          - name: Run ctest
            run: |
-              # wannier90.x is needed by the wann2kcp_basic test and lives
-              # in QE's build tree (we didn't install it).
-              export PATH="$GITHUB_WORKSPACE/q-e/build/bin:$PATH"
               ctest --test-dir build --output-on-failure
