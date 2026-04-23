@@ -6,10 +6,14 @@ tests/common/compare.py — one labelled line per quantity::
     npw <integer>
     nbnd <integer>
     norm <real>         # sqrt(sum |evc|^2) over all bands
-    sum_re <real>
-    sum_im <real>
 
-Format assumptions match gfortran / ifort / NVHPC defaults: 4-byte
+Only quantities that are reduction-order stable across compilers and MPI
+stacks are emitted. Raw complex sums like sum(Re(evc)) are dominated by
+cancellation and drift at the ~1e-4 level between e.g. gfortran+OpenMPI
+and ifx+IntelMPI; `norm` is a sum of positive-definite |evc|^2 contributions
+and is stable to ~1e-6.
+
+Format assumptions match gfortran / ifx / NVHPC defaults: 4-byte
 little-endian int32 record markers at both ends of each record.
 
 Usage::
@@ -51,8 +55,6 @@ def main():
         npw, nbnd = struct.unpack("<ii", header)
 
         norm_sq = 0.0
-        sum_re = 0.0
-        sum_im = 0.0
         for _ in range(nbnd):
             data = read_record(fh)
             if len(data) != 16 * npw:
@@ -62,14 +64,10 @@ def main():
             for i in range(npw):
                 re, im = struct.unpack_from("<dd", data, i * 16)
                 norm_sq += re * re + im * im
-                sum_re += re
-                sum_im += im
 
     print(f"npw    {npw}")
     print(f"nbnd   {nbnd}")
     print(f"norm   {math.sqrt(norm_sq):.16e}")
-    print(f"sum_re {sum_re:.16e}")
-    print(f"sum_im {sum_im:.16e}")
 
 
 if __name__ == "__main__":
