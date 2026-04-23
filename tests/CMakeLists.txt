@@ -41,17 +41,25 @@ find_program(BASH_EXECUTABLE bash REQUIRED)
 # Resolve binary paths.
 # ---------------------------------------------------------
 if(KQU_TESTS_STANDALONE)
+    # merge_evc.x is REQUIRED — merge_evc_basic always runs.
     find_program(MERGE_EVC_EXECUTABLE merge_evc.x REQUIRED)
-    find_program(WANN2KCP_EXECUTABLE  wann2kcp.x  REQUIRED)
-    find_program(EPSILON_EXECUTABLE   epsilon.x   REQUIRED)
+    # wann2kcp.x and epsilon.x are optional: their tests are conditionally
+    # registered (see existence guards below), so a downstream package that
+    # ships only some of the binaries can still configure the test tree.
+    find_program(WANN2KCP_EXECUTABLE wann2kcp.x)
+    find_program(EPSILON_EXECUTABLE  epsilon.x)
 else()
     set(MERGE_EVC_EXECUTABLE $<TARGET_FILE:qe_merge_evc_exe>)
     set(WANN2KCP_EXECUTABLE  $<TARGET_FILE:qe_wann2kcp_exe>)
     set(EPSILON_EXECUTABLE   $<TARGET_FILE:qe_epsilon_exe>)
 endif()
 
-# wannier90.x is an external runtime dep; optional in both modes.
-find_program(WANNIER90_EXECUTABLE wannier90.x)
+# wannier90.x is an external runtime dep; optional in both modes. In-tree
+# mode picks it up from the QE build tree (QE bundles wannier90, so QE_ROOT
+# alone is enough); standalone mode falls back to PATH.
+find_program(WANNIER90_EXECUTABLE wannier90.x
+    HINTS ${QE_ROOT}
+    PATH_SUFFIXES bin build/bin)
 
 # ---------------------------------------------------------
 # MPI launch configuration.
@@ -92,9 +100,10 @@ set_tests_properties(merge_evc_basic PROPERTIES
     LABELS "koopmans-qe-utils;merge_evc")
 
 # ---------------------------------------------------------
-# wann2kcp_basic — needs wannier90.x, a fixtures/ dir, and a ref.dat.
+# wann2kcp_basic — needs wann2kcp.x, wannier90.x, a fixtures/ dir, and a ref.dat.
 # ---------------------------------------------------------
-if(WANNIER90_EXECUTABLE
+if(WANN2KCP_EXECUTABLE
+   AND WANNIER90_EXECUTABLE
    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/wann2kcp_basic/ref.dat
    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/wann2kcp_basic/fixtures)
     add_test(
@@ -114,13 +123,14 @@ if(WANNIER90_EXECUTABLE
 else()
     message(STATUS
         "Skipping wann2kcp_basic test: "
-        "wannier90.x not found, or fixtures/ref.dat missing")
+        "wann2kcp.x or wannier90.x not found, or fixtures/ref.dat missing")
 endif()
 
 # ---------------------------------------------------------
-# epsilon_basic — needs a fixtures/ dir and a ref.dat.
+# epsilon_basic — needs epsilon.x, a fixtures/ dir, and a ref.dat.
 # ---------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/epsilon_basic/ref.dat
+if(EPSILON_EXECUTABLE
+   AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/epsilon_basic/ref.dat
    AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/epsilon_basic/fixtures)
     add_test(
         NAME epsilon_basic
@@ -137,5 +147,6 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/epsilon_basic/ref.dat
         LABELS "koopmans-qe-utils;epsilon")
 else()
     message(STATUS
-        "Skipping epsilon_basic test: fixtures/ref.dat missing")
+        "Skipping epsilon_basic test: "
+        "epsilon.x not found, or fixtures/ref.dat missing")
 endif()
