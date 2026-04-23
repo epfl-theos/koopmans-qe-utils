@@ -1,0 +1,81 @@
+name: Build and test
+
+on:
+   pull_request:
+      branches:
+         - master
+   push:
+      branches:
+         - master
+
+jobs:
+   build-and-test:
+      name: Build + test (gfortran + OpenMPI, HDF5)
+      runs-on: ubuntu-latest
+      steps:
+         - name: Install system dependencies
+           run: |
+              sudo apt-get update
+              sudo apt-get install -y \
+                 gfortran \
+                 libopenmpi-dev \
+                 libblas-dev \
+                 liblapack-dev \
+                 libfftw3-dev \
+                 libhdf5-openmpi-dev \
+                 cmake \
+                 python3
+         - name: Checkout koopmans-qe-utils
+           uses: actions/checkout@v4
+         - name: Checkout Quantum ESPRESSO (qe-7.4)
+           uses: actions/checkout@v4
+           with:
+              repository: QEF/q-e
+              ref: qe-7.4
+              path: q-e
+              submodules: recursive
+         - name: Cache QE build tree
+           id: cache-qe
+           uses: actions/cache@v4
+           with:
+              # Cache only the build tree; the source tree is re-fetched
+              # via checkout on every run (cheap) but the compile is slow.
+              # Bump the trailing version suffix (-v1) whenever the QE
+              # build recipe below changes, to force a rebuild.
+              path: q-e/build
+              key: qe-build-${{ runner.os }}-qe-7.4-v1
+         - name: Build QE libraries and wannier90.x
+           if: steps.cache-qe.outputs.cache-hit != 'true'
+           # FindEspresso.cmake looks up QE's static archives; shared libs
+           # are scattered across build/<subdir>/ and can't be found.
+           # Only the libraries we link against and the wannier90.x
+           # executable (needed at test time by wann2kcp_basic) are built.
+           run: |
+              cmake -S q-e -B q-e/build \
+                 -DBUILD_SHARED_LIBS=OFF \
+                 -DQE_ENABLE_MPI=ON \
+                 -DQE_ENABLE_HDF5=ON \
+                 -DHDF5_PREFER_PARALLEL=ON \
+                 -DQE_ENABLE_FOX=OFF \
+                 -DQE_WANNIER90_INTERNAL=ON \
+                 -DCMAKE_BUILD_TYPE=Release
+              cmake --build q-e/build -j --target \
+                 qe_pw qe_pp qe_modules qe_modules_c \
+                 qe_fftx qe_fftx_c qe_utilx qe_utilx_c qe_upflib \
+                 qe_lax qe_xclib qe_libbeef qe_xml qe_devxlib qe_dftd3 \
+                 qe_device_lapack qe_kssolver_dense mbd qe_wannier90_exe
+         - name: Configure and build koopmans-qe-utils (with tests)
+           run: |
+              cmake -S . -B build \
+                 -DQE_ROOT=$GITHUB_WORKSPACE/q-e \
+                 -DQE_ENABLE_MPI=ON \
+                 -DQE_ENABLE_HDF5=ON \
+                 -DQE_ENABLE_TEST=ON \
+                 -DCMAKE_BUILD_TYPE=Release
+              cmake --build build -j
+         - name: Run ctest
+           run: |
+              # wannier90.x is needed by the wann2kcp_basic test and lives
+              # in QE's build tree (we didn't install it).
+              export PATH="$GITHUB_WORKSPACE/q-e/build/bin:$PATH"
+              ctest --test-dir build --output-on-failure
