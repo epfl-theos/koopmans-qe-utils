@@ -33,7 +33,6 @@ jobs:
               repository: QEF/q-e
               ref: qe-7.4
               path: q-e
-              submodules: recursive
          - name: Cache QE build tree
            id: cache-qe
            uses: actions/cache@v4
@@ -44,6 +43,19 @@ jobs:
               # build recipe below changes, to force a rebuild.
               path: q-e/build
               key: qe-build-${{ runner.os }}-qe-7.4-v1
+         - name: Fetch required QE submodules
+           # Only fetch the submodules our --target list actually consumes,
+           # skipping FoX (off), Environ, D3Q, pw2qmcpack, qe-gipaw. Shallow
+           # clones are fine since QE builds from their worktree contents,
+           # not their git history. Skipped on cache hit — the compile is
+           # already finished and the built artefacts don't need sources.
+           if: steps.cache-qe.outputs.cache-hit != 'true'
+           working-directory: q-e
+           run: |
+              git submodule update --init --depth=1 \
+                 external/devxlib \
+                 external/mbd \
+                 external/wannier90
          - name: Build QE libraries and wannier90.x
            if: steps.cache-qe.outputs.cache-hit != 'true'
            # FindEspresso.cmake looks up QE's static archives; shared libs
