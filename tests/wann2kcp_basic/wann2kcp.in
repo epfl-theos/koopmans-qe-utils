@@ -1,0 +1,6 @@
+&inputpp
+   outdir           = 'TMP'
+   prefix           = 'kc'
+   seedname         = 'wannier90'
+   wan_mode         = 'wannier2kcp'
+/

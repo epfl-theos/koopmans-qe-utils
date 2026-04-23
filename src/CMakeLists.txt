@@ -9,7 +9,12 @@ set(src_qe_koopmans_utils
     scell_wfc.f90
     wannier2kcp.f90)
 
-add_library(qe_koopmans_utils ${src_qe_koopmans_utils})
+# Use qe_add_library (not plain add_library) so that QE's global compile
+# definitions (-D__MPI, -D__HDF5, -D__DFTI, …) reach the preprocessor when
+# compiling the files below. Without this, `#if defined(__MPI)` blocks in
+# e.g. scell_wfc.f90 get stripped out and the library silently takes the
+# serial code path even inside a parallel build.
+qe_add_library(qe_koopmans_utils ${src_qe_koopmans_utils})
 # target_link_libraries(qe_koopmans_utils INTERFACE ${QE_LIBRARIES})
 
 ###########################################################

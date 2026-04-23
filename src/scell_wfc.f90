@@ -61,7 +61,7 @@ MODULE scell_wfc
     REAL(DP) :: dot_prod
     !
     !
-    ! ... broadcast the unit cell wfc to all the procs 
+    ! ... broadcast the unit cell wfc to all the procs
     !
     nnrg = dffts%nnr
     CALL mp_sum( nnrg, intra_bgrp_comm )
@@ -97,7 +97,7 @@ MODULE scell_wfc
       i = idx
       IF ( i .GE. dfftx%nr1 ) CYCLE
       !
-      ! ... ip, jp and kp represent the indexes folded into the 
+      ! ... ip, jp and kp represent the indexes folded into the
       ! ... reference unit cell
       !
       ip = MOD( i, dffts%nr1 )
