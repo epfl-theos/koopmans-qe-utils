@@ -30,7 +30,7 @@ The Wannier90 checkpoint (`wannier90.chk`) is NOT shipped — it's regenerated
 at test time by running `wannier90.x wannier90` against the `.amn`/`.mmn`/`.eig`/
 `.win` fixtures. The `.save/` is HDF5, so it is portable cross-machine.
 
-The scalar comparison is done by the shared `tests/common/summarize_evc`
+The scalar comparison is done by the shared `tests/common/summarize_evc.py`
 helper, run against every `evcw*.dat` that `wann2kcp.x` produces — each
 label is prefixed by the filename so both blocks land in `actual.dat`
 alongside each other.
@@ -40,12 +40,16 @@ alongside each other.
 `wannier90.x` must be on `PATH` (comes from the `wannier90` conda-forge
 package; any other install works). If it isn't, CMake skips this test.
 
-## Generating `ref.dat`
+## Regenerating `ref.dat`
 
-1. `ctest --test-dir build -R wann2kcp_basic --output-on-failure` — will
-   fail the first time because `ref.dat` still has placeholder zeros.
+The checked-in `ref.dat` is populated. Regenerate it only when the test or
+the upstream code is intentionally changed:
+
+1. `ctest --test-dir build -R wann2kcp_basic --output-on-failure` — should
+   pass against the current `ref.dat`; if intentional changes have made it
+   stale, the diff lands in `build/tests/wann2kcp_basic/actual.dat`.
 2. Copy `build/tests/wann2kcp_basic/actual.dat` → `tests/wann2kcp_basic/ref.dat`.
-3. Commit.
+3. Review the diff and commit.
 
 Adjust tolerances in the `compare.py` invocation in `tests/CMakeLists.txt`
 (`--atol` / `--rtol`) if runs across machines drift more than the defaults

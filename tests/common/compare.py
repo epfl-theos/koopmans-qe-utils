@@ -12,8 +12,8 @@ files must have the same number of data lines, matching labels in the same
 order, and matching number counts per label.
 
 Floats are compared with ``math.isclose`` using configurable absolute and
-relative tolerances. The script exits 0 on success and 1 on the first mismatch
-(after reporting every failure).
+relative tolerances. Every mismatch is reported; the script exits 0 if all
+comparisons pass and 1 if any failed.
 """
 import argparse
 import math

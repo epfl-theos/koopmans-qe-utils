@@ -57,19 +57,17 @@ tests/
 ├── README.md                (this file)
 ├── common/
 │   ├── compare.py           Float-tolerant scalar diff
-│   ├── gen_merge_evc_inputs.f90
-│   └── summarize_evc.f90
+│   ├── gen_merge_evc_inputs.py
+│   └── summarize_evc.py
 ├── merge_evc_basic/
 │   ├── run.sh
 │   └── ref.dat
 ├── wann2kcp_basic/
 │   ├── run.sh
 │   ├── README.md            What fixtures this test needs
-│   ├── seedname.txt         (you provide)
-│   ├── wann2kcp.in          (you provide)
-│   ├── extract.sh           (you provide)
-│   ├── ref.dat              (you provide)
-│   └── fixtures/            (you provide – HDF5 .save/, .win, .nnkp, .upf)
+│   ├── wann2kcp.in          &inputpp namelist
+│   ├── ref.dat              reference scalars
+│   └── fixtures/            wannier90.win/.amn/.mmn/.eig/.nnkp + HDF5 .save/
 └── epsilon_basic/
     ├── run.sh
     ├── README.md
@@ -84,8 +82,8 @@ tests/
 * `compare.py` is a thin replacement for QE's `testcode.py` — one labelled
   line per scalar, absolute + relative tolerances, line-by-line diff.
 * `merge_evc_basic` is fully self-contained: input `.evc` files are synthesised
-  by `gen_merge_evc_inputs` (Fortran helper) at test time, so machine-level
-  byte layout is consistent inside a single run.
+  by `gen_merge_evc_inputs.py` at test time, so machine-level byte layout is
+  consistent inside a single run.
 * `wann2kcp_basic` ships `.save/` as a static HDF5 fixture but regenerates
   Wannier90's `<seedname>.chk` on each run, because Wannier90 has no portable
   checkpoint format.

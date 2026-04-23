@@ -54,8 +54,6 @@ def main():
     nbnd1 = int(sys.argv[4])
     nbnd2 = int(sys.argv[5])
 
-    # Formulas mirror tests/common/gen_merge_evc_inputs.f90 so a Fortran-based
-    # generator (if ever reintroduced) would produce bit-identical output.
     write_file(
         f1, npw, nbnd1,
         lambda i, j: ((i + 10 * j) / npw, (i - j) / (2 * npw)),

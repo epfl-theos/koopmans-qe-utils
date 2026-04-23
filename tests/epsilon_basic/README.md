@@ -2,6 +2,13 @@
 
 Integration test for `epsilon.x`.
 
+> **Status: template / not yet wired up.** Only `run.sh` and this README
+> are checked in. The fixtures, `epsilon.in`, `extract.sh`, and `ref.dat`
+> below have not yet been produced, so the test is auto-skipped by
+> `tests/CMakeLists.txt` (the `EXISTS … fixtures` / `ref.dat` guard) until
+> they are added. The layout below describes what a finished test should
+> contain.
+
 ## Layout
 
 ```
