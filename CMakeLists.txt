@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 
 project(koopmans-qe-utils
-    VERSION 0.1.1
+    VERSION 0.1.2
     DESCRIPTION "Utilities related to running Koopmans-compliant functionals with Quantum ESPRESSO"
     LANGUAGES Fortran C)
 
