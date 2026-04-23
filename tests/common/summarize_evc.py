@@ -61,9 +61,10 @@ def main():
                 raise ValueError(
                     f"band record size {len(data)} != expected {16 * npw}"
                 )
-            for i in range(npw):
-                re, im = struct.unpack_from("<dd", data, i * 16)
-                norm_sq += re * re + im * im
+            norm_sq += sum(
+                re * re + im * im
+                for re, im in struct.iter_unpack("<dd", data)
+            )
 
     print(f"npw    {npw}")
     print(f"nbnd   {nbnd}")
