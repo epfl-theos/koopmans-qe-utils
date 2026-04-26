@@ -1,4 +1,5 @@
 # Makefile for Koopmans utils
+#include ../make.inc
 
 # Make sure we have a make.inc from QE
 ifneq (,$(wildcard $(QE_ROOT)/make.inc))
@@ -21,7 +22,7 @@ WAN2KCP_OBJS = modified_wannier.o read_wannier.o fft_supercell.o scell_wfc.o plo
 
 MODULES = $(PWOBJS) $(QEMODS)
 
-all: checkmake pwlib pplib epsilon.x wann2kcp.x merge_evc.x
+all: checkmake pwlib pplib wann2kcp.x
 
 checkmake:
 	- test -f $(QE_ROOT)/make.inc || (echo 'Could not find $(QE_ROOT)/make.inc. Please configure your Quantum ESPRESSO installation first.'; exit 1)
@@ -32,18 +33,9 @@ pwlib:
 pplib:
 	cd $(QE_ROOT)/ ; $(MAKE) pp || exit 1
 
-merge_evc.x: merge_evc.o
-	$(LD) $(LDFLAGS) -o $@ merge_evc.o
-	- ( cd ../bin ; ln -fs ../src/$@ . )
-
 wann2kcp.x: wann2kcp.o $(WAN2KCP_OBJS) $(MODULES) $(LIBOBJS)
 	$(LD) $(LDFLAGS) -o $@ \
 		wann2kcp.o $(WAN2KCP_OBJS) $(MODULES) $(LIBOBJS) $(QELIBS)
-	- ( cd ../bin ; ln -fs ../src/$@ . )
-
-epsilon.x: epsilon.o $(MODULES) $(LIBOBJS)
-	$(LD) $(LDFLAGS) -o $@ epsilon.o $(MODULES) \
-	$(LIBOBJS) $(QELIBS)
 	- ( cd ../bin ; ln -fs ../src/$@ . )
 
 clean:
